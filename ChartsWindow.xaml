@@ -1,0 +1,357 @@
+﻿<Window x:Class="Кожетьева_WPF.ChartsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Кожетьева_WPF"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        mc:Ignorable="d"
+        Title="Графики клиники" 
+        Height="700" 
+        Width="1400"
+        MinWidth="400"
+        MinHeight="300"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        KeyDown="Window_KeyDown">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="MenuIconBrush" Color="#333333"/>
+        <SolidColorBrush x:Key="MenuIconHoverBrush" Color="#FF2196F3"/>
+        <SolidColorBrush x:Key="DataGridColumnHeader" Color="#FFE0F7FA"/>
+
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                CornerRadius="8"
+                                BorderThickness="1"
+                                BorderBrush="#555555"
+                                Background="#FF2196F3">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Color="#40000000"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF42A5F5"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="3" Color="#60000000"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF1976D2"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="3" ShadowDepth="1" Color="#30000000"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="30"/>
+        </Style>
+
+        <Style TargetType="StatusBar">
+            <Setter Property="Background" Value="#FFE0F7FA"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFC0E7F0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для содержимого вкладок -->
+        <Style x:Key="TabContentStyle" TargetType="Border">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#FFE0F7FA" Offset="0"/>
+                        <GradientStop Color="#FFB2EBF2" Offset="0.5"/>
+                        <GradientStop Color="#FFE0F7FA" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="CornerRadius" Value="0,0,5,5"/>
+            <Setter Property="BorderBrush" Value="#FF81D4FA"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10"/>
+        </Style>
+
+        <!-- Стиль для TabControl -->
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#FF2196F3"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="#FF42A5F5"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid>
+                            <Border Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="#FF0288D1"
+                                BorderThickness="1"
+                                CornerRadius="4,4,0,0">
+                                <ContentPresenter x:Name="ContentSite"
+                                          ContentSource="Header"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FF1976D2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FF1E88E5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Стиль для подписей данных -->
+        <Style TargetType="lvc:DefaultTooltip">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <!-- Стиль для графиков -->
+        <Style TargetType="lvc:CartesianChart">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
+        <Style TargetType="lvc:PieChart">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <!-- градиентный фон -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FFE0F7FA" Offset="0"/>
+                <GradientStop Color="#FFB2EBF2" Offset="0.5"/>
+                <GradientStop Color="#FFE0F7FA" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок окна -->
+            <TextBlock Grid.Row="0"
+                       Text="Графики клиники"
+                       FontWeight="Bold"
+                       FontSize="24"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0,10"/>
+
+            <!-- Графики -->
+            <TabControl Grid.Row="1" Margin="10">
+            <!-- <TabItem Header="Платежи по дням">
+                    <Border Style="{StaticResource TabContentStyle}">
+                        <lvc:CartesianChart Series="{Binding PaymentSeries}" LegendLocation="Right">
+                            <lvc:CartesianChart.SeriesColors>
+                                <lvc:ColorsCollection>
+                                    <Color>#5F9EA0</Color>
+                                    <Color>#4682B4</Color>
+                                    <Color>#B0C4DE</Color>
+                                </lvc:ColorsCollection>
+                            </lvc:CartesianChart.SeriesColors>
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Title="День" Labels="{Binding Months}">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator StrokeThickness="0.5" Stroke="#CCCCCC"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis Title="Сумма (руб)" LabelFormatter="{Binding YFormatter}">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator StrokeThickness="0.5" Stroke="#CCCCCC"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                        </lvc:CartesianChart>
+                    </Border>
+                </TabItem>
+
+                <TabItem Header="Регистрации пациентов">
+                    <Border Style="{StaticResource TabContentStyle}">
+                        <lvc:CartesianChart Series="{Binding RegistrationSeries}" LegendLocation="Right">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Title="Период">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator StrokeThickness="0.5" Stroke="#CCCCCC"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis Title="Количество регистраций">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator StrokeThickness="0.5" Stroke="#CCCCCC"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                        </lvc:CartesianChart>
+                    </Border>
+                </TabItem> -->
+
+                <TabItem Header="Распределение услуг">
+                    <Border Style="{StaticResource TabContentStyle}">
+                        <lvc:PieChart Series="{Binding ServiceSeries}" LegendLocation="Right"
+                         AnimationsSpeed="0:0:0.5" 
+                         DisableAnimations="False"             
+                         InnerRadius="50" HoverPushOut="15" Foreground="Black">
+                            <lvc:PieChart.SeriesColors>
+                                <lvc:ColorsCollection>
+                                    <Color>#93C572</Color>
+                                    <Color>#5B9BD5</Color>
+                                    <Color>#FFC000</Color>
+                                    <Color>#70AD47</Color>
+                                    <Color>#4472C4</Color>
+                                </lvc:ColorsCollection>
+                            </lvc:PieChart.SeriesColors>
+                        </lvc:PieChart>
+                    </Border>
+                </TabItem>
+
+                <TabItem Header="Категории услуг">
+                    <Border Style="{StaticResource TabContentStyle}">
+                        <lvc:PieChart Series="{Binding CategorySeries}" LegendLocation="Right"
+                         AnimationsSpeed="0:0:0.5" 
+                         DisableAnimations="False"             
+                         InnerRadius="50" HoverPushOut="15">
+                            <lvc:PieChart.SeriesColors>
+                                <lvc:ColorsCollection>
+                                    <Color>#8FAADC</Color>
+                                    <Color>#F4B183</Color>
+                                    <Color>#A9D18E</Color>
+                                    <Color>#FFD966</Color>
+                                </lvc:ColorsCollection>
+                            </lvc:PieChart.SeriesColors>
+                        </lvc:PieChart>
+                    </Border>
+                </TabItem>
+
+                <TabItem Header="Методы оплаты">
+                    <Border Style="{StaticResource TabContentStyle}">
+                        <lvc:PieChart Series="{Binding PaymentMethodSeries}" LegendLocation="Right"
+                         AnimationsSpeed="0:0:0.5" 
+                         DisableAnimations="False"             
+                         InnerRadius="50" HoverPushOut="15">
+                            <lvc:PieChart.SeriesColors>
+                                <lvc:ColorsCollection>
+                                    <Color>#70AD47</Color>
+                                    <!-- Наличные -->
+                                    <Color>#4472C4</Color>
+                                    <!-- Карта -->
+                                    <Color>#FFC000</Color>
+                                    <!-- Онлайн -->
+                                    <Color>#A5A5A5</Color>
+                                    <!-- Страховка -->
+                                </lvc:ColorsCollection>
+                            </lvc:PieChart.SeriesColors>
+                        </lvc:PieChart>
+                    </Border>
+                </TabItem>
+                <TabItem Header="Динамика доходов">
+                    <Border Style="{StaticResource TabContentStyle}">
+                        <lvc:CartesianChart Series="{Binding IncomeSeries}" LegendLocation="Right"
+                        AnimationsSpeed="0:0:0.5"
+                        DisableAnimations="False">
+                            <lvc:CartesianChart.DataTooltip>
+                                <lvc:DefaultTooltip 
+            BulletSize="10"
+            ShowTitle="True"
+            ShowSeries="True"
+            SelectionMode="OnlySender"
+            Background="#FFE0F7FA"
+            CornerRadius="5"
+            FontSize="14">
+                                    <!--<lvc:DefaultTooltip.Formatter>
+                                        <local:IncomeTooltipFormatter/>
+                                    </lvc:DefaultTooltip.Formatter>-->
+                                </lvc:DefaultTooltip>
+                            </lvc:CartesianChart.DataTooltip>
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis 
+                    Title="Дата" 
+                    Labels="{Binding IncomeDates}"
+                    Separator="{x:Static lvc:DefaultAxes.CleanSeparator}">
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis 
+                    Title="Сумма (руб)" 
+                    LabelFormatter="{Binding YFormatter}">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator StrokeThickness="0.5" Stroke="#CCCCCC"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                        </lvc:CartesianChart>
+                    </Border>
+                </TabItem>
+            </TabControl>
+
+            <!-- Кнопки действий -->
+            <StackPanel Grid.Row="2" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Center" 
+                        Margin="0,10,0,10">
+                <!-- <Button Content="Обновить" 
+                        Style="{StaticResource ModernButtonStyle}"
+                        Click="RefreshButton_Click"
+                        Margin="5,0"/>  -->
+                <Button Content="Экспорт" 
+                        Style="{StaticResource ModernButtonStyle}"
+                        Click="ExportButton_Click"
+                        Margin="5,0"/>
+                <Button Content="Импорт" 
+                        Style="{StaticResource ModernButtonStyle}"
+                        Click="ImportButton_Click"
+                        Margin="5,0"/>
+                <Button Content="Закрыть" 
+                        Style="{StaticResource ModernButtonStyle}"
+                        Click="CloseButton_Click"
+                        Margin="5,0"/>
+            </StackPanel>
+
+            <!-- Строка состояния -->
+            <StatusBar Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="10,5,10,0">
+                <StatusBarItem>
+                    <TextBlock x:Name="StatusText" Text="Готово" Margin="5,0"/>
+                </StatusBarItem>
+            </StatusBar>
+        </Grid>
+    </Grid>
+</Window>

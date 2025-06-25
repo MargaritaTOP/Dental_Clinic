@@ -1,0 +1,333 @@
+﻿<Window x:Class="Кожетьева_WPF.ReportsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Отчёты клиники" 
+        Height="700" 
+        Width="1400"
+        MinWidth="400"
+        MinHeight="300"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        KeyDown="Window_KeyDown">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="MenuIconBrush" Color="#333333"/>
+        <SolidColorBrush x:Key="MenuIconHoverBrush" Color="#FF2196F3"/>
+        <SolidColorBrush x:Key="DataGridColumnHeader" Color="#FFE0F7FA"/>
+
+        <Style TargetType="DataGridColumnHeadersPresenter">
+            <Setter Property="Background" Value="#FFE0F7FA"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#FFE0F7FA" />
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter 
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFC0E7F0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="#FFC0E7F0"/>
+            <Setter Property="RowBackground" Value="#FFC0E7F0"/>
+            <Setter Property="AlternatingRowBackground" Value="#FFC0E7F0"/>
+            <Setter Property="BorderBrush" Value="#FFC0E7F0"/>
+            <Setter Property="GridLinesVisibility" Value="All"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#88000000"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#88000000"/>
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF81D4FA"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FF4FC3F7"/>
+                    <Setter Property="Foreground" Value="#333333"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#88000000"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border 
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="True">
+                            <ContentPresenter 
+                                VerticalAlignment="Center"
+                                Margin="4,0"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FF4FC3F7"/>
+                    <Setter Property="Foreground" Value="#333333"/>
+                    <Setter Property="BorderBrush" Value="#88000000"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF81D4FA"/>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                CornerRadius="8"
+                                BorderThickness="1"
+                                BorderBrush="#555555"
+                                Background="#FF2196F3">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Color="#40000000"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF42A5F5"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="3" Color="#60000000"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF1976D2"/>
+                                <Setter TargetName="border" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="3" ShadowDepth="1" Color="#30000000"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="30"/>
+        </Style>
+
+        <Style TargetType="StatusBar">
+            <Setter Property="Background" Value="#FFE0F7FA"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFC0E7F0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <!-- градиентный фон -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FFE0F7FA" Offset="0"/>
+                <GradientStop Color="#FFB2EBF2" Offset="0.5"/>
+                <GradientStop Color="#FFE0F7FA" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок окна -->
+            <TextBlock Grid.Row="0"
+                       Text="Отчёты клиники"
+                       FontWeight="Bold"
+                       FontSize="24"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0,10"/>
+
+            <!-- Блок для выбора периода -->
+            <Border Grid.Row="1" Background="#FFE0F7FA" CornerRadius="5" Margin="10" Padding="10">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="Период с:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <DatePicker x:Name="StartDatePicker" Width="120" SelectedDate="{Binding StartDate}">
+                        <DatePicker.ToolTip>
+                            <ToolTip Content="Выберите начальную дату периода"/>
+                        </DatePicker.ToolTip>
+                    </DatePicker>
+
+                    <TextBlock Text="по:" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                    <DatePicker x:Name="EndDatePicker" Width="120" SelectedDate="{Binding EndDate}">
+                        <DatePicker.ToolTip>
+                            <ToolTip Content="Выберите конечную дату периода"/>
+                        </DatePicker.ToolTip>
+                    </DatePicker>
+
+                    <Button Content="Применить период" 
+                            Style="{StaticResource ModernButtonStyle}"
+                            Click="ApplyDateRange_Click"
+                            Margin="10,0,10,0"
+                            Width="120"
+                            ToolTip="Применить фильтр по дате"/>
+                    <Button Content="Сбросить период" 
+                            Style="{StaticResource ModernButtonStyle}"
+                            Click="ResetDateRange_Click"
+                            Margin="10,0,10,0"
+                            Width="120"
+                            ToolTip="Показать данные за весь период без фильтрации по дате"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Первая таблица - отчет по пациентам -->
+            <Border Grid.Row="2"
+                    Background="#FFE0F7FA"
+                    CornerRadius="5"
+                    Margin="10"
+                    Padding="10">
+                <DataGrid x:Name="PatientsReportGrid" 
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          ColumnHeaderStyle="{StaticResource {x:Type DataGridColumnHeader}}"
+                          SelectionMode="Single"
+                          Background="Transparent"
+                          GridLinesVisibility="All"
+                          RowBackground="Transparent"
+                          AlternatingRowBackground="Transparent"
+                          HorizontalGridLinesBrush="#55000000"
+                          VerticalGridLinesBrush="#55000000"
+                          HeadersVisibility="All"
+                          BorderThickness="0"
+                          FontSize="14"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Stretch"
+                          ColumnWidth="*">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}" Width="*"/>
+                        <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}" Width="*"/>
+                        <DataGridTextColumn Header="Отчество" Binding="{Binding MiddleName}" Width="*"/>
+                        <DataGridTextColumn Header="Количество визитов" Binding="{Binding VisitCount}" Width="*"/>
+                        <DataGridTextColumn Header="Всего потрачено" Binding="{Binding TotalSpent}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <!-- Вторая таблица - отчет по услугам -->
+            <Border Grid.Row="3"
+                    Background="#FFE0F7FA"
+                    CornerRadius="5"
+                    Margin="10"
+                    Padding="10">
+                <DataGrid x:Name="ServicesReportGrid"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          ColumnHeaderStyle="{StaticResource {x:Type DataGridColumnHeader}}"
+                          SelectionMode="Single"
+                          Background="Transparent"
+                          GridLinesVisibility="All"
+                          RowBackground="Transparent"
+                          AlternatingRowBackground="Transparent"
+                          HorizontalGridLinesBrush="#55000000"
+                          VerticalGridLinesBrush="#55000000"
+                          HeadersVisibility="All"
+                          BorderThickness="0"
+                          FontSize="14"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Stretch"
+                          ColumnWidth="*">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Название услуги" Binding="{Binding ServiceName}" Width="*"/>
+                        <DataGridTextColumn Header="Базовая цена" Binding="{Binding BasePrice}" Width="*"/>
+                        <DataGridTextColumn Header="Количество использований" Binding="{Binding UsageCount}" Width="*"/>
+                        <DataGridTextColumn Header="Общий доход" Binding="{Binding TotalIncome}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <!-- Кнопки  -->
+            <StackPanel Grid.Row="4" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Center" 
+                        Margin="0,10,0,10">
+                <Button Content="Обновить" 
+                        Style="{StaticResource ModernButtonStyle}"
+                        Click="RefreshButton_Click"
+                        Margin="5,0"/>
+                <Button Content="Экспорт" 
+                        Style="{StaticResource ModernButtonStyle}"
+                        Click="ExportButton_Click"
+                        Margin="5,0"/>
+                <Button Content="Импорт" 
+                        Style="{StaticResource ModernButtonStyle}"
+                        Click="ImportButton_Click"
+                        Margin="5,0"/>
+                <Button Content="Закрыть" 
+                        Style="{StaticResource ModernButtonStyle}"
+                        Click="CloseButton_Click"
+                        Margin="5,0"/>
+            </StackPanel>
+
+            <StatusBar Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="10,5,10,0">
+                <StatusBarItem>
+                    <TextBlock x:Name="StatusText" Text="Готово" Margin="5,0"/>
+                </StatusBarItem>
+            </StatusBar>
+        </Grid>
+    </Grid>
+</Window>
